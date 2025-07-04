@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
   }
 
   // Resize image pool if requested
-  if(n != -1) {
+  if(n != -1 && n < images.size()) {
     std::cout << "Taking only first " << n << " images." << std::endl;
     std::sort(images.begin(), images.end());
     images.resize(n);
