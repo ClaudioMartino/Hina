@@ -1,6 +1,6 @@
 # HINA
 
-**HINA** is a c++ software that can divide images in clusters according to their similarity.
+**HINA** is a C++ software that can divide images in clusters according to their similarity.
 
 You would like to distinguish the holiday photos taken in the evening at the disco from those taken in the morning at the beach, but there are hundreds of them and they come from different sources. This software can do this job for you.
 
@@ -25,7 +25,7 @@ ALGLIB is a numerical analysis and data processing library. We need it to perfor
 Download the compressed sources from [this page](https://www.alglib.net/download.php#cpp) and unpack them in the `src/alglib-cpp` directory:
 ```
 mkdir src/alglib-cpp
-unzip alglib-<version>cpp.gpl.zip -d src/alglib-cpp
+unzip alglib-<version>.cpp.gpl.zip -d src/alglib-cpp
 ```
 
 ### HINA
@@ -38,9 +38,9 @@ make
 
 ## Usage
 ```
-./hina -d <directory> -c <clusters> [-n <files>]
+./hina -d <directory> -c <clusters> [-n <files> -m <metric>]
 ```
-where `directory` is the path to the folder containing your images and `clusters` is the number of groups you want. You can also limit the analysys to the first N files using the `-n` option.
+where `directory` is the path to the folder containing your images and `clusters` is the number of groups you want. You can also limit the analysis to the first N files using the `-n` option. The metric to compare the histogram is an integer between 0 and 5 described [here](https://docs.opencv.org/4.11.0/d6/dc7/group__imgproc__hist.html#ga994f53817d621e2e4228fc646342d386), default is 0. 
 
 ## Contributing
 Contributions are most welcome by forking the repository and sending a pull request. Errors and new features proposals can be reported opening an issue as well.

@@ -9,7 +9,7 @@
 using namespace std;
 using namespace cv;
 
-void compute_distance_matrix(double* dContent, vector<string> images) {
+void compute_distance_matrix(double* dContent, vector<string> images, int method) {
   size_t tot = images.size();
   Mat src_base, src_test;
   Mat hsv_base, hsv_test;
@@ -32,10 +32,9 @@ void compute_distance_matrix(double* dContent, vector<string> images) {
 
   int cnt = 0;
   for(int base = 0; base<tot; base++) {
-    //cout << "base = " << base << endl;
     src_base = imread(images[base]);
     if(src_base.empty()) {
-      cout << "Could not open or find the base image" << endl;
+      cout << "Could not open or find the image" << images[base] << endl;
       return;
     }
 
@@ -44,13 +43,12 @@ void compute_distance_matrix(double* dContent, vector<string> images) {
 
     // Calculate the histograms for the HSV images
     calcHist( &hsv_base, 1, channels, Mat(), hist_base, 2, histSize, ranges, true, false );
-    normalize( hist_base, hist_base, 0, 1, NORM_MINMAX, -1, Mat() );
+    normalize( hist_base, hist_base, 1, 0, NORM_L1, -1, Mat() );
 
     for(int test = base+1; test<tot; test++) {
-      //cout << "test = " << test << endl;
       src_test = imread(images[test]);
       if(src_test.empty()) {
-        cout << "Could not open or find the test image" << endl;
+        cout << "Could not open or find the image" << images[test] << endl;
         return;
       }
   
@@ -59,22 +57,23 @@ void compute_distance_matrix(double* dContent, vector<string> images) {
   
       // Calculate the histograms for the HSV images
       calcHist( &hsv_test, 1, channels, Mat(), hist_test, 2, histSize, ranges, true, false );
-      normalize( hist_test, hist_test, 0, 1, NORM_MINMAX, -1, Mat() );
+      normalize( hist_test, hist_test, 1, 0, NORM_L1, -1, Mat() );
   
       // Apply the histogram comparison method
       /*
       cv::HISTCMP_CORREL = 0,
       cv::HISTCMP_CHISQR = 1,
-      cv::HISTCMP_INTERSECT = 2,
-      cv::HISTCMP_BHATTACHARYYA = 3,
-      cv::HISTCMP_CHISQR_ALT = 4,
-      cv::HISTCMP_KL_DIV = 5 
+      cv::HISTCMP_INTERSECT = 2, 
+      cv::HISTCMP_BHATTACHARYYA = 3, 
+      cv::HISTCMP_CHISQR_ALT = 4,    
+      cv::HISTCMP_KL_DIV = 5         
       */
-      //double base_base = compareHist( hist_base, hist_base, HISTCMP_CORREL );
-      double base_test = compareHist( hist_base, hist_test, HISTCMP_CORREL );
+      double base_test = compareHist( hist_base, hist_test, method );
 
-      //cout <<  base_test << ",";
-      dContent[(base)+tot*(test)] = 1-base_test;
+      if(method == 0 || method == 2)
+        base_test = 1 - base_test;
+
+      dContent[base + tot * test] = base_test;
 
       // Print status
       cnt++;

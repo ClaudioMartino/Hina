@@ -11,12 +11,11 @@ void compute_clusters(double * dContent, vector<string> images, size_t final_clu
   real_2d_array d;
   d.setcontent(tot, tot, dContent);
 
-  //// print differences matrix
+  // print differences matrix
   //for(size_t i=0; i<tot; i++) {
   //    for(size_t j=0; j<tot; j++)
-  //        cout <<  d[i][j] << ",";
-  //
-  //        cout << endl;
+  //        cout << d[i][j] << ",";
+  //    cout << endl;
   //}
 
   clusterizerstate s;
