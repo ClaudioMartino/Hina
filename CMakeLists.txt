@@ -1,18 +1,26 @@
 cmake_minimum_required(VERSION 3.8)
 project(hina VERSION 0.1)
 
-# Look for Open CV library (already built)
+# Look for Open CV library
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 
-# Build alglib library
-file(GLOB_RECURSE ALGLIB_SRC ${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp/*.cpp)
-add_library(alglib STATIC ${ALGLIB_SRC})
-target_include_directories(alglib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp)
+add_executable(hina
+${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp/dataanalysis.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp/ap.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp/alglibinternal.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp/alglibmisc.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp/linalg.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp/statistics.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp/specialfunctions.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp/optimization.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp/solvers.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp/fasttransforms.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/distance.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/clusters.cpp
+${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
+)
 
-# Build main
-add_executable(hina ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/distance.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/clusters.cpp)
+target_include_directories(hina PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/alglib-cpp)
 
-# Link libraries
 target_link_libraries(hina PUBLIC ${OpenCV_LIBS})
-target_link_libraries(hina PUBLIC alglib)
