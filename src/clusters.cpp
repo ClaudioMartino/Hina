@@ -6,7 +6,8 @@
 using namespace alglib;
 using namespace std;
 
-void compute_clusters(double * dContent, vector<string> images, size_t final_clusters) {
+vector<vector<int>> compute_clusters(double * dContent, vector<string> images, size_t final_clusters) {
+  std::vector<std::vector<int>> clusters;
   size_t tot = images.size();
   real_2d_array d;
   d.setcontent(tot, tot, dContent);
@@ -28,7 +29,7 @@ void compute_clusters(double * dContent, vector<string> images, size_t final_clu
   }
   catch(alglib::ap_error alglib_exception) {
     printf("ALGLIB exception with message '%s'\n", alglib_exception.msg.c_str());
-    return;
+    return clusters;
   }
 
   //printf("Z: %s\n", rep.z.tostring().c_str());
@@ -60,12 +61,13 @@ void compute_clusters(double * dContent, vector<string> images, size_t final_clu
     //cout << endl;
   }
 
-  // Print final clusters
+  // Save final clusters
   for(size_t i=0; i<tot_buffers; i++) {
     if(buffers[i].size() > 0) {
-      for(int elm : buffers[i])
-        cout << images[elm] << endl;
-      cout << endl;
+      clusters.push_back(buffers[i]);
     }
   }
+
+  return clusters;
+
 }

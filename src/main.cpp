@@ -69,13 +69,21 @@ int main(int argc, char **argv) {
     return -1;
   }
 
-  // Compute distance matrix
   double d[tot * tot];
 
+  // Compute distance matrix
   compute_distance_matrix(d, images, method);
 
   // Compute clusters
-  compute_clusters(d, images, final_clusters);
+  std::vector<std::vector<int>> clusters = compute_clusters(d, images, final_clusters);
+
+  // Print result
+  for(size_t i=0; i<clusters.size(); i++) {
+    for(size_t j=0; j<clusters[i].size(); j++) {
+      std::cout << images[clusters[i][j]] << std::endl;
+    }
+    std::cout << std::endl;
+  }
 
   return 0;
 }
