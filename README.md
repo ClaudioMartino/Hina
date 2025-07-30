@@ -24,8 +24,7 @@ ALGLIB is a numerical analysis and data processing library. We need it to perfor
 
 Download the compressed sources from [this page](https://www.alglib.net/download.php#cpp) and unpack them in the `src/alglib-cpp` directory:
 ```
-mkdir src/alglib-cpp
-unzip alglib-<version>.cpp.gpl.zip -d src/alglib-cpp
+unzip alglib-<version>.cpp.gpl.zip -d src
 ```
 
 ### HINA
