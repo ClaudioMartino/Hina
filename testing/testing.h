@@ -15,5 +15,3 @@ void run_test(void(*test)(), const char* name) {
     printf("[-] '%s' test failed. %s\n", name, e.what());
   } 
 }
-
-

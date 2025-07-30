@@ -2,11 +2,15 @@
 // https://www.alglib.net/translator/man/manual.cpp.html#example_clst_distance
 
 #include "dataanalysis.h"
+#include <stdexcept>
 
 using namespace alglib;
 using namespace std;
 
 vector<vector<int>> compute_clusters(double * dContent, vector<string> images, size_t final_clusters) {
+  if(final_clusters < 1 or final_clusters > images.size())
+    throw std::runtime_error("Clusters number > images number");
+
   std::vector<std::vector<int>> clusters;
   size_t tot = images.size();
   real_2d_array d;

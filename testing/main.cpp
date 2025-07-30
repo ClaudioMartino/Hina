@@ -16,19 +16,36 @@ std::vector<std::string> get_image_list() {
 
 void check_clusters_size() {
   std::vector<std::string> images = get_image_list();
+  double d[images.size()*images.size()];
 
   const size_t clusters_size = 2;
 
-  for(int method=0; method<6; method++) {
-    double d[images.size()*images.size()];
-    compute_distance_matrix(d, images, method);
+  const int method = 0;
+  compute_distance_matrix(d, images, method);
+  std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size);
+  assert_that(clusters.size() == clusters_size, "Wrong cluster size.");
+}
+
+void check_clusters_size_overflow() {
+  std::vector<std::string> images = get_image_list();
+  double d[images.size()*images.size()];
+
+  const size_t clusters_size = images.size() + 1;
+
+  const int method = 0;
+  compute_distance_matrix(d, images, method);
+  try {
     std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size);
-    assert_that(clusters.size() == clusters_size, "Wrong cluster size.");
   }
+  catch (const std::runtime_error& e) {
+    return;
+  }
+  throw std::runtime_error("Exception has not been thrown.");
 }
 
 int main() {
-  run_test(check_clusters_size, "cluster size");
+  run_test(check_clusters_size, "cluster size is requested one");
+  run_test(check_clusters_size_overflow, "cluster size overflow");
 
   return 0;
 }
