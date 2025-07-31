@@ -43,9 +43,22 @@ void check_clusters_size_overflow() {
   throw std::runtime_error("Exception has not been thrown.");
 }
 
+void check_clusters() {
+  std::vector<std::string> images = get_image_list();
+  double d[images.size()*images.size()];
+
+  const size_t clusters_size = 2;
+  const int method = 0;
+  compute_distance_matrix(d, images, method);
+  std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size);
+  std::vector<std::vector<int>> ref{{2}, {0, 1}};
+  assert_that(clusters == ref, "Wrong clusters.");
+}
+
 int main() {
   run_test(check_clusters_size, "cluster size is requested one");
   run_test(check_clusters_size_overflow, "cluster size overflow");
+  run_test(check_clusters, "cluster");
 
   return 0;
 }
