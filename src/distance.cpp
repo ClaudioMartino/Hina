@@ -9,6 +9,22 @@
 using namespace std;
 using namespace cv;
 
+void printProgress(int cnt, int comp) {
+  const int barWidth = 70;
+  double progress = (double)cnt/comp;
+
+  std::cout << "[";
+  int pos = barWidth * progress;
+  for (int i = 0; i < barWidth; ++i) {
+    if (i < pos)
+      std::cout << "=";
+    else
+      std::cout << " ";
+  }
+  std::cout << "] " << cnt << "/" << comp << "\r";
+  std::cout.flush();
+}
+
 void compute_distance_matrix(double* dContent, vector<string> images, int method, bool quiet) {
   if(quiet)
     std::cout.setstate(std::ios_base::failbit);
@@ -78,12 +94,13 @@ void compute_distance_matrix(double* dContent, vector<string> images, int method
 
       dContent[base + tot * test] = base_test;
 
-      // Print status
+      // Print status bar
       cnt++;
-      if (cnt % (comp/10) == 0)
-        cout << cnt *100 / comp << "%" << endl;
+      printProgress(cnt, comp);
     }
   }
+  std::cout << endl;
+
   // Restore output verbosity
   std::cout.clear();
 }
