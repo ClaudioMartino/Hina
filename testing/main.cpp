@@ -21,8 +21,8 @@ void check_clusters_size() {
   const size_t clusters_size = 2;
 
   const int method = 0;
-  compute_distance_matrix(d, images, method);
-  std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size);
+  compute_distance_matrix(d, images, method, true);
+  std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size, true);
   assert_that(clusters.size() == clusters_size, "Wrong cluster size.");
 }
 
@@ -33,9 +33,9 @@ void check_clusters_size_overflow() {
   const size_t clusters_size = images.size() + 1;
 
   const int method = 0;
-  compute_distance_matrix(d, images, method);
+  compute_distance_matrix(d, images, method, true);
   try {
-    std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size);
+    std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size, true);
   }
   catch (const std::runtime_error& e) {
     return;
@@ -49,8 +49,8 @@ void check_clusters() {
 
   const size_t clusters_size = 2;
   const int method = 0;
-  compute_distance_matrix(d, images, method);
-  std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size);
+  compute_distance_matrix(d, images, method, true);
+  std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size, true);
   std::vector<std::vector<int>> ref{{2}, {0, 1}};
   assert_that(clusters == ref, "Wrong clusters.");
 }

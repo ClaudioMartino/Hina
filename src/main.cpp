@@ -11,8 +11,9 @@ int main(int argc, char **argv) {
   size_t final_clusters = 0;
   size_t n = -1;
   int method = 0;
+  bool quiet = false;
   for(;;) {
-    switch(getopt(argc, argv, "d:c:n:m:h")) {
+    switch(getopt(argc, argv, "d:c:n:m:qh")) {
       case 'd':
         path = optarg;
         continue;
@@ -25,9 +26,12 @@ int main(int argc, char **argv) {
       case 'm':
         method = atoi(optarg);
         continue;
+      case 'q':
+        quiet = true;
+        continue;
       case 'h':
       default :
-        std::cout << "Usage: hina -d <directory> -c <clusters> [-n <images>] [-m <method>] [-h]" << std::endl;
+        std::cout << "Usage: hina -d <directory> -c <clusters> [-n <images>] [-m <method>] [-q] [-h]" << std::endl;
         return 0;
         break;
       case -1:
@@ -35,6 +39,9 @@ int main(int argc, char **argv) {
     }
     break;
   }
+
+  if(quiet)
+    std::cout.setstate(std::ios_base::failbit);
 
   if(path.empty()) {
     std::cout << "Enter a directory!" << std::endl;
@@ -72,17 +79,17 @@ int main(int argc, char **argv) {
   double d[tot * tot];
 
   // Compute distance matrix
-  compute_distance_matrix(d, images, method);
+  compute_distance_matrix(d, images, method, quiet);
 
   // Compute clusters
-  std::vector<std::vector<int>> clusters = compute_clusters(d, images, final_clusters);
+  std::vector<std::vector<int>> clusters = compute_clusters(d, images, final_clusters, quiet);
 
   // Print result
+  std::cout.clear();
   for(size_t i=0; i<clusters.size(); i++) {
     for(size_t j=0; j<clusters[i].size(); j++) {
-      std::cout << images[clusters[i][j]] << std::endl;
+      std::cout << "[Cluster " << i+1 << "] " << images[clusters[i][j]] << std::endl;
     }
-    std::cout << std::endl;
   }
 
   return 0;

@@ -9,7 +9,10 @@
 using namespace std;
 using namespace cv;
 
-void compute_distance_matrix(double* dContent, vector<string> images, int method) {
+void compute_distance_matrix(double* dContent, vector<string> images, int method, bool quiet) {
+  if(quiet)
+    std::cout.setstate(std::ios_base::failbit);
+
   size_t tot = images.size();
   Mat src_base, src_test;
   Mat hsv_base, hsv_test;
@@ -81,4 +84,6 @@ void compute_distance_matrix(double* dContent, vector<string> images, int method
         cout << cnt *100 / comp << "%" << endl;
     }
   }
+  // Restore output verbosity
+  std::cout.clear();
 }

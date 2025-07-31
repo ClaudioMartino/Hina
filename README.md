@@ -37,9 +37,11 @@ make
 
 ## Usage
 ```
-./hina -d <directory> -c <clusters> [-n <files> -m <metric>]
+./hina -d <directory> -c <clusters> [-n <files> -m <metric> -q]
 ```
-where `directory` is the path to the folder containing your images and `clusters` is the number of groups you want. You can also limit the analysis to the first N files using the `-n` option. The metric to compare the histogram is an integer between 0 and 5 described [here](https://docs.opencv.org/4.11.0/d6/dc7/group__imgproc__hist.html#ga994f53817d621e2e4228fc646342d386), default is 0. 
+where `directory` is the path to the folder containing your images and `clusters` is the number of groups you want.
+
+You can also limit the analysis to the first N files using the `-n` option. The metric to compare the histogram is an integer between 0 and 5 described [here](https://docs.opencv.org/4.11.0/d6/dc7/group__imgproc__hist.html#ga994f53817d621e2e4228fc646342d386), default is 0. You can obtain a quiet output using the -q flag, just the final clusters will be printed. 
 
 ## Contributing
 Contributions are most welcome by forking the repository and sending a pull request. Errors and new features proposals can be reported opening an issue as well.

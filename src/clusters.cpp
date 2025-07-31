@@ -7,7 +7,7 @@
 using namespace alglib;
 using namespace std;
 
-vector<vector<int>> compute_clusters(double * dContent, vector<string> images, size_t final_clusters) {
+vector<vector<int>> compute_clusters(double * dContent, vector<string> images, size_t final_clusters, bool quiet) {
   if(final_clusters < 1 or final_clusters > images.size())
     throw std::runtime_error("Clusters number > images number");
 
@@ -32,7 +32,7 @@ vector<vector<int>> compute_clusters(double * dContent, vector<string> images, s
     clusterizerrunahc(s, rep);
   }
   catch(alglib::ap_error alglib_exception) {
-    printf("ALGLIB exception with message '%s'\n", alglib_exception.msg.c_str());
+    cout << "ALGLIB exception: " << alglib_exception.msg.c_str() << endl;
     return clusters;
   }
 
@@ -72,6 +72,8 @@ vector<vector<int>> compute_clusters(double * dContent, vector<string> images, s
     }
   }
 
-  return clusters;
+  // Restore output verbosity
+  std::cout.clear();
 
+  return clusters;
 }
