@@ -1,7 +1,7 @@
 #include <cstdio>
 #include <stdexcept>
 
-void assert_that(bool statement, const char* msg) {
+void assert_that(bool statement, std::string msg) {
   if(!statement)
     throw std::runtime_error(msg);
 }
