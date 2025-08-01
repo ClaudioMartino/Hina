@@ -6,6 +6,9 @@ You would like to distinguish the holiday photos taken in the evening at the dis
 
 HINA is the acronym for **H**INA **I**s **N**ot an **A**cronym. It means *doll* in Japanese (雛).
 
+> [!IMPORTANT]
+> This software doesn't make use of AI, it is based on histogram comparison.
+
 ## Installation
 You will need [OpenCV](https://opencv.org/ "OpenCV") and [ALGLIB](https://www.alglib.net). [CMake](https://cmake.org/) is needed to build.
 
@@ -41,7 +44,7 @@ make
 ```
 where `directory` is the path to the folder containing your images and `clusters` is the number of groups you want.
 
-You can also limit the analysis to the first N files using the `-n` option. The metric to compare the histogram is an integer between 0 and 5 described [here](https://docs.opencv.org/4.11.0/d6/dc7/group__imgproc__hist.html#ga994f53817d621e2e4228fc646342d386), default is 0. You can obtain a quiet output using the -q flag, just the final clusters will be printed. 
+You can also limit the analysis to the first N files using the `-n` option. The metric to compare the histogram is an integer between 0 and 5 described [here](https://docs.opencv.org/4.x/d6/dc7/group__imgproc__hist.html#ga994f53817d621e2e4228fc646342d386), default is 0 (correlation). You can obtain a quiet output using the `-q` flag, just the errors and the final clusters will be printed.
 
 ## Contributing
 Contributions are most welcome by forking the repository and sending a pull request. Errors and new features proposals can be reported opening an issue as well.

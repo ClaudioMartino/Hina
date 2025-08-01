@@ -40,9 +40,6 @@ int main(int argc, char **argv) {
     break;
   }
 
-  if(quiet)
-    std::cout.setstate(std::ios_base::failbit);
-
   if(path.empty()) {
     std::cout << "Enter a directory!" << std::endl;
     return -1;
@@ -51,6 +48,10 @@ int main(int argc, char **argv) {
     std::cout << "Invalid method!" << std::endl;
     return -1;
   }
+
+  if(quiet)
+    std::cout.setstate(std::ios_base::failbit);
+
   std::cout << "Image directory: " << path << std::endl;
   std::cout << "Histogram comparison method: " << method << std::endl;
   std::cout << "Number of clusters: " << final_clusters << std::endl;
@@ -72,6 +73,7 @@ int main(int argc, char **argv) {
   std::cout << "Number of images: " << tot << std::endl;
 
   if(final_clusters < 1 || final_clusters > tot) {
+    std::cout.clear();
     std::cout << "Invalid number of clusters!" << std::endl;
     return -1;
   }
@@ -88,7 +90,7 @@ int main(int argc, char **argv) {
   std::cout.clear();
   for(size_t i=0; i<clusters.size(); i++) {
     for(size_t j=0; j<clusters[i].size(); j++) {
-      std::cout << "[Cluster " << i+1 << "] " << images[clusters[i][j]] << std::endl;
+      std::cout << "[Cluster " << i+1 << "] " << images[clusters[i][j]].erase(0, path.size()) << std::endl;
     }
   }
 
