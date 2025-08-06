@@ -35,7 +35,7 @@ You can now build HINA using cmake:
 ```
 export OpenCV_DIR=<hina_folder>/opencv_build
 cmake .
-make
+make hina
 ```
 
 ## Usage
@@ -45,6 +45,14 @@ make
 where `directory` is the path to the folder containing your images and `clusters` is the number of groups you want.
 
 You can also limit the analysis to the first N files using the `-n` option. The metric to compare the histogram is an integer between 0 and 5 described [here](https://docs.opencv.org/4.x/d6/dc7/group__imgproc__hist.html#ga994f53817d621e2e4228fc646342d386), default is 0 (correlation). You can obtain a quiet output using the `-q` flag, just the errors and the final clusters will be printed.
+
+## Testing 
+To build and run the tests
+```
+make test
+./test
+```
+The inputs are 8bpp 300x300 grayscale and RGB images taken from the "Sampling" set of The TESTIMAGES archive. See Asuni N., Giachetti A., ["TESTIMAGES: A Large Data Archive For Display and Algorithm Testing"](https://www.tandfonline.com/doi/abs/10.1080/2165347X.2015.1024298?journalCode=ujgt21), Journal of Graphics Tools, Volume 17, Issue 4, 2015, pages 113-125, DOI:10.1080/2165347X.2015.1024298.
 
 ## Contributing
 Contributions are most welcome by forking the repository and sending a pull request. Errors and new features proposals can be reported opening an issue as well.
