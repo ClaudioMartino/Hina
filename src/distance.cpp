@@ -25,58 +25,63 @@ void printProgress(int cnt, int comp) {
   std::cout.flush();
 }
 
+void calc_histogram(const Mat *image, OutputArray hist) {
+  // 50 bins for hue and 60 for saturation
+  int histSize_hsv[] = { 50, 60 };
+  int histSize_gray[] = { 256 };
+
+  // hue varies from 0 to 179, saturation from 0 to 255
+  float h_ranges[] = { 0, 180 };
+  float s_ranges[] = { 0, 256 };
+  const float* ranges_hsv[] = { h_ranges, s_ranges };
+  const float* ranges_gray[] = { s_ranges };
+
+  // channels
+  int channels_gray[1] = { 0 };
+  int channels_hsv[2] = { 0, 1 };
+
+  if(image->channels() != 1) {
+    Mat hsv;
+    cvtColor(*image, hsv, COLOR_BGR2HSV); // converto to HSV
+    calcHist(&hsv, 1, channels_hsv, Mat(), hist, 2, histSize_hsv, ranges_hsv, true, false);
+  }
+  else {
+    calcHist(image, 1, channels_gray, Mat(), hist, 1, histSize_gray, ranges_gray, true, false);
+  }
+}
+
 void compute_distance_matrix(double* dContent, vector<string> images, int method, bool quiet) {
   if(quiet)
     std::cout.setstate(std::ios_base::failbit);
 
   size_t tot = images.size();
   Mat src_base, src_test;
-  Mat hsv_base, hsv_test;
   Mat hist_base, hist_test;
-
-  // Using 50 bins for hue and 60 for saturation
-  int h_bins = 50, s_bins = 60;
-  int histSize[] = { h_bins, s_bins };
-
-  // hue varies from 0 to 179, saturation from 0 to 255
-  float h_ranges[] = { 0, 180 };
-  float s_ranges[] = { 0, 256 };
-  const float* ranges[] = { h_ranges, s_ranges };
-
-  // Use the 0-th and 1-st channels
-  int channels[] = { 0, 1 };
-
-  int comp = (tot * tot -tot) / 2;
+  int comp = (tot*tot - tot) / 2;
   cout << "Number of distances to compute: " << comp << endl;
 
   int cnt = 0;
   for(int base = 0; base<tot; base++) {
-    src_base = imread(images[base]);
+    src_base = imread(images[base], IMREAD_ANYCOLOR);
     if(src_base.empty()) {
       cout << "Could not open or find the image" << images[base] << endl;
       return;
     }
 
-    // Convert to HSV
-    cvtColor( src_base, hsv_base, COLOR_BGR2HSV );
-
-    // Calculate the histograms for the HSV images
-    calcHist( &hsv_base, 1, channels, Mat(), hist_base, 2, histSize, ranges, true, false );
-    normalize( hist_base, hist_base, 1, 0, NORM_L1, -1, Mat() );
+    // Calculate the histogram of base image
+    calc_histogram(&src_base, hist_base);
+    normalize(hist_base, hist_base, 1, 0, NORM_L1, -1, Mat());
 
     for(int test = base+1; test<tot; test++) {
-      src_test = imread(images[test]);
+      src_test = imread(images[test], IMREAD_ANYCOLOR);
       if(src_test.empty()) {
         cout << "Could not open or find the image" << images[test] << endl;
         return;
       }
   
-      // Convert to HSV
-      cvtColor( src_test, hsv_test, COLOR_BGR2HSV );
-  
-      // Calculate the histograms for the HSV images
-      calcHist( &hsv_test, 1, channels, Mat(), hist_test, 2, histSize, ranges, true, false );
-      normalize( hist_test, hist_test, 1, 0, NORM_L1, -1, Mat() );
+      // Calculate the histogram of test image
+      calc_histogram(&src_test, hist_test);
+      normalize(hist_test, hist_test, 1, 0, NORM_L1, -1, Mat());
   
       // Apply the histogram comparison method
       /*
@@ -92,6 +97,7 @@ void compute_distance_matrix(double* dContent, vector<string> images, int method
       if(method == 0 || method == 2)
         base_test = 1 - base_test;
 
+      // Save results in lower triangular matrix
       dContent[base + tot * test] = base_test;
 
       // Print status bar
