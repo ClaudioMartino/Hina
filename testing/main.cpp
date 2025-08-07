@@ -6,26 +6,29 @@
 
 void check_clusters_size() {
   std::vector<std::string> images = get_image_list(TEST_IMAGES_GRAY);
-  double d[images.size()*images.size()];
-
   const size_t clusters_size = 2;
-
   const int method = 0;
-  compute_distance_matrix(d, images, method, true);
-  std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size, true);
-  assert_that(clusters.size() == clusters_size, "Wrong cluster size, " + std::to_string(clusters.size()) + " instead of " + std::to_string(clusters_size) + ".");
+
+  DistanceMatrix d(images.size());
+  d.compute(images, method, true);
+
+  Clusters c;
+  c.compute(d, images, clusters_size, true);
+
+  assert_that(c.get().size() == clusters_size, "Wrong cluster size, " + std::to_string(c.get().size()) + " instead of " + std::to_string(clusters_size) + ".");
 }
 
 void check_clusters_size_overflow() {
   std::vector<std::string> images = get_image_list(TEST_IMAGES_GRAY);
-  double d[images.size()*images.size()];
-
   const size_t clusters_size = images.size() + 1;
-
   const int method = 0;
-  compute_distance_matrix(d, images, method, true);
+
+  DistanceMatrix d(images.size());
+  d.compute(images, method, true);
+
   try {
-    std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size, true);
+    Clusters c;
+    c.compute(d, images, clusters_size, true);
   }
   catch (const std::runtime_error& e) {
     return;
@@ -35,12 +38,15 @@ void check_clusters_size_overflow() {
 
 void check_clusters(enum ImagePool ip, size_t clusters_size, std::vector<std::vector<std::vector<int>>> refs) {
   std::vector<std::string> images = get_image_list(ip);
-  double d[images.size()*images.size()];
 
+  DistanceMatrix d(images.size());
   for(int method=0; method<6; method++) {
-    compute_distance_matrix(d, images, method, true);
-    std::vector<std::vector<int>> clusters = compute_clusters(d, images, clusters_size, true);
-    assert_that(clusters == refs[method], "Wrong clusters with method " + std::to_string(method));
+    d.compute(images, method, true);
+
+    Clusters c;
+    c.compute(d, images, clusters_size, true);
+
+    assert_that(c.get() == refs[method], "Wrong clusters with method " + std::to_string(method));
   }
 }
 

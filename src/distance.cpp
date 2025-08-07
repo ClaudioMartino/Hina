@@ -6,6 +6,8 @@
 #include "opencv2/imgproc.hpp"
 #include <iostream>
 
+#include "hina.h"
+
 using namespace std;
 using namespace cv;
 
@@ -23,6 +25,18 @@ void printProgress(int cnt, int comp) {
   }
   std::cout << "] " << cnt << "/" << comp << "\r";
   std::cout.flush();
+}
+
+DistanceMatrix::DistanceMatrix(size_t tot) {
+  val = new double[tot*tot];
+}
+
+DistanceMatrix::~DistanceMatrix() {
+  delete[] val;
+}
+
+double* DistanceMatrix::get() {
+  return val;
 }
 
 void calc_histogram(const Mat *image, OutputArray hist) {
@@ -50,7 +64,7 @@ void calc_histogram(const Mat *image, OutputArray hist) {
   }
 }
 
-void compute_distance_matrix(double* dContent, vector<string> images, int method, bool quiet) {
+void DistanceMatrix::compute(vector<string> images, int method, bool quiet) {
   if(quiet)
     std::cout.setstate(std::ios_base::failbit);
 
@@ -85,20 +99,19 @@ void compute_distance_matrix(double* dContent, vector<string> images, int method
   
       // Apply the histogram comparison method
       /*
-      cv::HISTCMP_CORREL = 0,
-      cv::HISTCMP_CHISQR = 1,
-      cv::HISTCMP_INTERSECT = 2, 
-      cv::HISTCMP_BHATTACHARYYA = 3, 
-      cv::HISTCMP_CHISQR_ALT = 4,    
-      cv::HISTCMP_KL_DIV = 5         
+      CORREL = 0,
+      CHISQR = 1,
+      INTERSECT = 2, 
+      BHATTACHARYYA = 3, 
+      CHISQR_ALT = 4,    
+      KL_DIV = 5         
       */
       double base_test = compareHist( hist_base, hist_test, method );
-
       if(method == 0 || method == 2)
         base_test = 1 - base_test;
 
       // Save results in lower triangular matrix
-      dContent[base + tot * test] = base_test;
+      val[base + tot * test] = base_test;
 
       // Print status bar
       cnt++;
