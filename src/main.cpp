@@ -83,9 +83,9 @@ int main(int argc, char **argv) {
   d.compute(images, method, quiet);
 
   // Compute clusters
-  Clusters c;
-  c.compute(d, images, final_clusters, quiet);
-  c.print(images, path);
+  Clusters c(final_clusters, images, path);
+  c.compute(d, quiet);
+  c.print();
 
   return 0;
 }

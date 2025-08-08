@@ -10,14 +10,16 @@ private:
 };
 
 struct Clusters {
-  Clusters() = default;
+  Clusters(size_t final_clusters, std::vector<std::string>& images, std::string path);
   ~Clusters() = default;
 
-  void compute(DistanceMatrix& d, std::vector<std::string> images, size_t final_clusters, bool quiet);
-  void print(std::vector<std::string> images, std::string path);
+  void compute(DistanceMatrix& d, bool quiet);
+  void print();
   std::vector<std::vector<int>> get();
 
 private:
   size_t final_clusters;
+  std::vector<std::string> images;
+  std::string path;
   std::vector<std::vector<int>> val;
 };

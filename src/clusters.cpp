@@ -9,20 +9,28 @@
 using namespace alglib;
 using namespace std;
 
+Clusters::Clusters(size_t final_clusters, std::vector<std::string>& images, std::string path) {
+  this->final_clusters = final_clusters;
+  this->images = images;
+  this->path = path;
+  std::vector<std::vector<int>> v(final_clusters, {});
+  this->val = v;
+}
+
 std::vector<std::vector<int>> Clusters::get() {
   return val;
 }
 
-void Clusters::print(std::vector<std::string> images, std::string path) {
+void Clusters::print() {
   std::cout.clear();
-  for(size_t i=0; i<val.size(); i++) {
+  for(size_t i=0; i<final_clusters; i++) {
     for(size_t j=0; j<val[i].size(); j++) {
       std::cout << "[Cluster " << i+1 << "] " << images[val[i][j]].erase(0, path.size()) << std::endl;
     }
   }
 }
 
-void Clusters::compute(DistanceMatrix& dist, vector<string> images, size_t final_clusters, bool quiet) {
+void Clusters::compute(DistanceMatrix& dist, bool quiet) {
   if(final_clusters < 1 or final_clusters > images.size())
     throw std::runtime_error("Clusters number > images number");
 
@@ -49,11 +57,11 @@ void Clusters::compute(DistanceMatrix& dist, vector<string> images, size_t final
   size_t tot_buffers = tot + n_merges - (final_clusters -1);
   vector<vector<int>> buffers(tot_buffers);
 
-  // [0; tot-1]
+  // Initialize buffers [0; tot-1]
   for(size_t i = 0; i<tot; i++) {
     buffers[i].push_back(i);
   }
-  // [tot; tot_buffers-1]
+  // Compute buffers [tot; tot_buffers-1]
   for(size_t i = tot; i<tot_buffers; i++) {
     //cout << "merge cluster " << rep.z[i-tot][0] << " with " << rep.z[i-tot][1] << " in cluster " << i << endl;
     // copy buffer[i][0]
@@ -66,10 +74,12 @@ void Clusters::compute(DistanceMatrix& dist, vector<string> images, size_t final
     vector<int>().swap(buffers[rep.z[i-tot][1]]);   // clear vector reallocating
   }
 
-  // Save final clusters
+  // Save non-empty buffers as final clusters
+  size_t cnt = 0;
   for(size_t i=0; i<tot_buffers; i++) {
     if(buffers[i].size() > 0) {
-      val.push_back(buffers[i]);
+      val[cnt] = buffers[i];
+      cnt++;
     }
   }
 
