@@ -53,7 +53,7 @@ void Clusters::compute(DistanceMatrix& dist, bool quiet) {
   //printf("P: %s\n", rep.p.tostring().c_str());
   //printf("PM: %s\n", rep.pm.tostring().c_str()); 
 
-  size_t n_merges = tot - 1; // rep.z.size()? TODO
+  size_t n_merges = tot - 1; // = rep.z.size()
   size_t tot_buffers = tot + n_merges - (final_clusters -1);
   vector<vector<int>> buffers(tot_buffers);
 
@@ -61,17 +61,19 @@ void Clusters::compute(DistanceMatrix& dist, bool quiet) {
   for(size_t i = 0; i<tot; i++) {
     buffers[i].push_back(i);
   }
+
   // Compute buffers [tot; tot_buffers-1]
   for(size_t i = tot; i<tot_buffers; i++) {
+    // Merge buffers according to the Z array
     //cout << "merge cluster " << rep.z[i-tot][0] << " with " << rep.z[i-tot][1] << " in cluster " << i << endl;
-    // copy buffer[i][0]
     for(size_t idx : buffers[rep.z[i-tot][0]])
       buffers[i].push_back(idx);
-    vector<int>().swap(buffers[rep.z[i-tot][0]]);   // clear vector reallocating
-    // copy buffer[i][1]
     for(size_t idx : buffers[rep.z[i-tot][1]])
       buffers[i].push_back(idx);
-    vector<int>().swap(buffers[rep.z[i-tot][1]]);   // clear vector reallocating
+
+    // Clear merged vector (size=0)
+    buffers[rep.z[i-tot][0]].clear();
+    buffers[rep.z[i-tot][1]].clear();
   }
 
   // Save non-empty buffers as final clusters
