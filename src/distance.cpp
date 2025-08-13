@@ -27,7 +27,7 @@ void printProgress(int cnt, int comp) {
   std::cout.flush();
 }
 
-DistanceMatrix::DistanceMatrix(size_t tot) {
+DistanceMatrix::DistanceMatrix(size_t tot) : tot { tot } {
   val = new double[tot*tot];
 }
 
@@ -37,6 +37,15 @@ DistanceMatrix::~DistanceMatrix() {
 
 double* DistanceMatrix::get() {
   return val;
+}
+
+void DistanceMatrix::print() {
+  for(size_t i=0; i<tot; i++) {
+    for(size_t j=0; j<tot; j++) {
+      printf("%.2f ", val[i*tot+j]);
+    }
+    printf("\n");
+  }
 }
 
 void calc_histogram(const Mat *image, OutputArray hist) {
