@@ -49,28 +49,52 @@ void DistanceMatrix::print() {
 }
 
 void calc_histogram(const Mat *image, OutputArray hist) {
-  // 50 bins for hue and 60 for saturation
-  int histSize_hsv[] = { 50, 60 };
-  int histSize_gray[] = { 256 };
+  int nimages = 1;
+  InputArray mask = Mat(); // empty mask
+  int dims = image->channels();
+  bool uniform = true;
+  bool accumulate = false;
 
-  // hue varies from 0 to 179, saturation from 0 to 255
-  float h_ranges[] = { 0, 180 };
-  float s_ranges[] = { 0, 256 };
-  const float* ranges_hsv[] = { h_ranges, s_ranges };
-  const float* ranges_gray[] = { s_ranges };
+  float ranges180[] = { 0, 180 };
+  float ranges256[] = { 0, 256 };
+  const float* ranges_hsv[] = { ranges180, ranges256, ranges256 };
+  const float* ranges_gray[] = { ranges256 };
+  const float* ranges_rgb[] = { ranges256, ranges256, ranges256 };
 
-  // channels
-  int channels_gray[1] = { 0 };
-  int channels_hsv[2] = { 0, 1 };
+  int* channels;
+  const float** ranges;
+  int* histSize;
+  const Mat* img;
+  Mat hsv;
 
-  if(image->channels() != 1) {
-    Mat hsv;
-    cvtColor(*image, hsv, COLOR_BGR2HSV); // converto to HSV
-    calcHist(&hsv, 1, channels_hsv, Mat(), hist, 2, histSize_hsv, ranges_hsv, true, false);
+  if(dims != 1) {
+    channels = new int[3] { 0, 1, 2 };
+    bool convert = true;
+    if(convert) {
+      cvtColor(*image, hsv, COLOR_BGR2HSV); // convert to HSV
+      dims -= 1; // take only H and S
+
+      ranges = ranges_hsv;
+      histSize = new int[2] { 50, 60 };
+      img = &hsv;
+    }
+    else {
+      ranges = ranges_rgb;
+      histSize = new int[3] { 256, 256, 256 };
+      img = image;
+    }
   }
   else {
-    calcHist(image, 1, channels_gray, Mat(), hist, 1, histSize_gray, ranges_gray, true, false);
+    channels = new int[1] { 0 };
+    ranges = ranges_gray;
+    histSize = new int[1] { 256 };
+    img = image;
   }
+
+  calcHist(img, nimages, channels, mask, hist, dims, histSize, ranges, uniform, accumulate);
+
+  delete[] histSize;
+  delete[] channels;
 }
 
 void DistanceMatrix::compute(vector<string> images, int method, bool quiet) {
