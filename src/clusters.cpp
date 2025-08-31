@@ -13,7 +13,7 @@ Clusters::Clusters(size_t final_clusters, std::vector<std::string>& images, std:
   this->final_clusters = final_clusters;
   this->images = images;
   this->path = path;
-  std::vector<std::vector<int>> v(final_clusters, {});
+  std::vector<std::vector<int>> v(final_clusters);
   this->val = v;
 }
 
