@@ -54,6 +54,20 @@ make test
 ```
 The inputs are 8bpp 300x300 grayscale and RGB images taken from the "Sampling" set of The TESTIMAGES archive. See Asuni N., Giachetti A., ["TESTIMAGES: A Large Data Archive For Display and Algorithm Testing"](https://www.tandfonline.com/doi/abs/10.1080/2165347X.2015.1024298?journalCode=ujgt21), Journal of Graphics Tools, Volume 17, Issue 4, 2015, pages 113-125, DOI:10.1080/2165347X.2015.1024298.
 
+## GUI application (Qt)
+> [!CAUTION]
+> The GUI application is a beta.
+
+You will need [Qt 6](https://www.qt.io/).
+
+```
+cd <hina_folder>/qt
+export Qt6_DIR=<Qt_folder>
+mkdir build && cd build
+cmake ..
+make
+```
+
 ## Contributing
 Contributions are most welcome by forking the repository and sending a pull request. Errors and new features proposals can be reported opening an issue as well.
 
